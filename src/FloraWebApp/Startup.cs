@@ -101,6 +101,7 @@ namespace FloraWebApp
 
             app.UseIdentity();
 
+            // Use middleware, so user request will be delegated to middleware, after middleware finish its work, call MVC's RequestDelegate.
             app.UseMiddlewareX();
 
             app.UseDefaultFiles(new DefaultFilesOptions());
