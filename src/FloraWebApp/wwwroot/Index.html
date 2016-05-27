@@ -2,6 +2,8 @@
 <head>
     <meta charset="utf-8" />
     <title>Tutorial: Hello Dojo!</title>
+    <script src="TestX.js"></script>
+    <script src="FloraX.js"></script>
     <script type="text/javascript">
         var dojoConfig = {
             async: true,
@@ -31,6 +33,14 @@
                     var xElem = dom.byId("greeting");
                     xElem.innerHTML = "Good boy, Dojo, this time you look compliant and cute.";
                 });
+    </script>
+
+    <button id="btnCall">Call Function</button>
+    <script>
+        document.getElementById("btnCall").addEventListener("click", handelButtonClick, true);
+        function handelButtonClick(e) {
+            CallJSFunction();
+        }
     </script>
 </body>
 </html>
