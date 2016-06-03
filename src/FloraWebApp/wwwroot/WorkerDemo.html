@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <button id="btnTestWebWorker">Test Web Worker</button>
+    <script>
+        document.getElementById("btnTestWebWorker").addEventListener("click", Test, true);
+        function Test(e) {
+            if (typeof (Worker) !== 'undefined') {
+                window.alert("Great, your browser supports web worker!");
+            }
+            else {
+                window.alert("Sorry, your browser doesn't support web worker!");
+            }
+        }
+    </script>
+
+    <button id="btnTestSharedWorker">Create a shared worker</button>
+
+    <pre id="log"></pre>
+
+    <script>
+        document.getElementById("btnTestSharedWorker").addEventListener("click", CreateSharedWorker, false);
+        function CreateSharedWorker(e) {
+            var sharedWorker = new SharedWorker("testSharedWorker.js");
+            var log = document.getElementById("log");
+            sharedWorker.port.onmessage = function (e) {
+                log.textContent += '\n' + e.data;
+            }
+        }
+    </script>
+
+    <pre>Shared Worker Demo2:
+        This sencond example extends the first one by changing two things: first, messages are received using addEventListener() instead of an event handler IDL attribute,
+        and second, a message is sent to the worker, causing the worker to send another message in return.
+    </pre>
+    <button id="btnSharedWorkerDemo2">Shared Worker Demo2</button>
+    <br />
+
+    <script>
+        document.getElementById("btnSharedWorkerDemo2").addEventListener("click", SharedWorkerDemo2, false);
+        function SharedWorkerDemo2(e) {
+            var sharedWorker = new SharedWorker("SharedWorkerDemo2.js");
+            sharedWorker.port.addEventListener("message", ReceiveMessageFromSharedWorkerMessagePort, false);
+            sharedWorker.port.start();  // Note: need this when using addEventListener.
+            sharedWorker.port.postMessage("ping");
+        }
+
+        function ReceiveMessageFromSharedWorkerMessagePort(e) {
+            var log = document.getElementById("logDemo2");
+            log.textContent += "\n" + e.data;
+        }
+    </script>
+    <pre id="logDemo2"></pre>
+
+    <pre>
+        Below exmaple<code>Demo3</code> shows how two pages can connect to the same worker.
+    </pre>
+    <button id="btnDemo3">Demo3</button> <button id="btnCloseDemo3">Close SharedWorker</button>
+    <script>
+        document.getElementById("btnDemo3").addEventListener("click", SharedWorkerDemo3, false);
+        document.getElementById("btnCloseDemo3").addEventListener("click", CloseSharedWorker, false);
+        var sharedWorker = new SharedWorker("SharedWorkerDemo3.js");
+        function SharedWorkerDemo3(e) {
+            window.open("AnotherPage.html", "_blank");
+
+            var log = document.getElementById("logDemo3");
+            sharedWorker.port.addEventListener("message", function (e) {
+                log.textContent += "\n" + e.data;
+            }, false);
+            sharedWorker.port.start();
+            sharedWorker.port.postMessage("ping");
+        }
+        function CloseSharedWorker(e) {
+            sharedWorker.port.postMessage("close");
+        }
+    </script>
+    <pre id="logDemo3">
+
+    </pre>
+
+    <pre>
+        We can also create multiple instances of Shared Worker by passing different name to SharedWorker constructor.
+    </pre>
+    <button id="btnDemo5">Multiple instances of SharedWorker</button> <button id="btnCloseMultipleSharedWorkers" onclick="CloseMultipleInstances()">Close Multiple Instances</button>
+    <script>
+        document.getElementById("btnDemo5").addEventListener("click", CreateMultipleSharedWorkers, false);
+        var sharedWorker1;
+        var sharedWorker2;
+        function CreateMultipleSharedWorkers(e) {
+            if (sharedWorker1) {
+                sharedWorker1.terminate();
+            }
+            if (sharedWorker2) {
+                sharedWorker2.terminate();
+            }
+
+            window.open("AnotherPage.html", "_blank");
+
+            sharedWorker1 = new SharedWorker("SharedWorkerDemo3.js", "SharedWorker1");
+            sharedWorker2 = new SharedWorker("SharedWorkerDemo3.js", "SharedWorker2");
+            
+            var log = document.getElementById("logDemo5");
+            sharedWorker1.port.addEventListener("message", function (e) {
+                log.textContent += "\n" + e.data;
+            }, false);
+            sharedWorker1.port.start();
+            sharedWorker1.port.postMessage("ping");
+
+            sharedWorker2.port.addEventListener("message", function (e) {
+                log.textContent += "\n" + e.data;
+            }, false);
+            sharedWorker2.port.start();
+            sharedWorker2.port.postMessage("ping");
+        }
+
+        function CloseMultipleInstances() {
+            if (sharedWorker1) {
+                sharedWorker1.terminate();
+            }
+            if (sharedWorker2) {
+                sharedWorker2.terminate();
+            }
+        }
+    </script>
+
+    <pre id="logDemo5">
+
+    </pre>
+</body>
+</html>
