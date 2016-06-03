@@ -4,6 +4,7 @@
     <title>Tutorial: Hello Dojo!</title>
     <script src="TestX.js"></script>
     <script src="FloraX.js"></script>
+    <script src="script/FileAPI.js" />
     <script type="text/javascript">
         var dojoConfig = {
             async: true,
@@ -42,5 +43,26 @@
             CallJSFunction();
         }
     </script>
+
+    <p>
+        <input type="file" id="fileInputX" style="width:300px; height:24px;" />
+        <br />
+        <button id="btnTestReadFile">Read File Content</button>
+        <div id="divFileContent">
+
+        </div>
+        <script>
+            document.getElementById("btnTestReadFile").addEventListener("click", TestReadFile, true);
+            function TestReadFile(e) {
+                if (typeof FileReader == 'undefined') {
+                    window.alert("Your browser doesn't support File Read API!");
+                }
+                else {
+                    var fileObj = document.getElementById("fileInputX").files[0];
+                    document.getElementById("divFileContent").innerHTML = ReadFile(fileObj);
+                }
+            }
+        </script>
+    </p>
 </body>
 </html>
